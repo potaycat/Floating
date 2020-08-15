@@ -21,6 +21,9 @@ body {
     height: 999px;
     width: 999px;
     background: black;
+    color: #fff;
+    align-content: center;
+    vertical-align: middle;
 }
 
 .hidden {
