@@ -15,3 +15,15 @@ body {
 .assets img {
     display: none;
 }
+
+.load-scr {
+    position: absolute;
+    height: 999px;
+    width: 999px;
+    background: black;
+}
+
+.hidden {
+    opacity: 0;
+    transition: opacity 0.5s;
+}

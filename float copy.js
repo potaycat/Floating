@@ -10,10 +10,10 @@ class Component {
         this.y = y
         this.width = width
         this.height = height
-
-        this.frames = []
+        
+        this.frameArr = []
     }
-    isCollidedW(otherCpnt) {
+    isCollidedW(otherCpnt) { // not used
         let myleft = this.x,
             myright = this.x + this.width,
             mytop = this.y,
@@ -29,7 +29,7 @@ class Component {
         return isCollided
     }
     // animated sprite
-    setFrames(imgArr) {
+    setFrameArr(imgArr) {
         if (!Array.isArray(imgArr)) {
             return
         }
@@ -38,17 +38,17 @@ class Component {
                 return
             }
         }
-        this.frames = imgArr
-        this.curFrame = 0
+        this.frameArr = imgArr
+        this.currFrame = 0
     }
     getCurFrame() {
-        return this.frames[this.curFrame]
+        return this.frameArr[this.currFrame]
     }
     shiftFrame() {
-        if (this.curFrame + 1 >= this.frames.length) {
-            this.curFrame = 0
+        if (this.currFrame + 1 >= this.frameArr.length) {
+            this.currFrame = 0
         } else {
-            this.curFrame += 1
+            this.currFrame += 1
         }
     }
     update(ctx) {
@@ -63,7 +63,6 @@ class Character extends Component {
         this.velY = 0
         this.accelX = 0
         this.accelY = 0
-        this.status = "red"
 
         this.dragFrce = 0.3 // slipperiness
     }
@@ -73,8 +72,7 @@ class Character extends Component {
         this.y += this.velY
         this.hitBorder()
 
-        // super.update(ctx)
-        ctx.fillStyle = this.status
+        ctx.fillStyle = "red"
         ctx.fillRect(this.x, this.y, this.width, this.height)
     }
     newPos() {
@@ -117,7 +115,7 @@ class Rock extends Component {
     constructor(text, x, y) {
         super(x, y, 250, 150)
         this.text = text
-        this.setFrames([document.getElementById("rock"), document.getElementById("rock2")])
+        this.setFrameArr([document.getElementById("rock"), document.getElementById("rock2")])
     }
     update(ctx) {
         super.update(ctx)
@@ -135,7 +133,7 @@ class PatternFill extends Component {
 
 
 let myMovingCanvas = {
-    canvas: document.getElementById("my-canvas"),
+    canvas: document.getElementById("myCanvas"),
     elemnts: [ new Character(30, 30, 10, 120) ],
     start: function () {
         this.canvas.width = 500
@@ -155,83 +153,67 @@ let myMovingCanvas = {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
     },
     update: function () {
-        let ctx = this.context,
-            el = this.elemnts,
-            char = el[0],
-            isCollided = false
-
         this.clear()
         this.frameNo += 1
         if ( (this.frameNo / 9) % 1 == 0 ) {
             // every 9 frames
-            el.forEach(obj => {
-                obj.shiftFrame()
+            this.elemnts.forEach(el => {
+                el.shiftFrame()
             })
         }
-        for (let i = 1; i < el.length; i++) {
-            el[i].update(ctx)
-            if (el[i].isCollidedW(char)) {
-                isCollided = true
-            }
-        }
-
-        if (isCollided) {
-            char.status = "red"
-        } else {
-            char.status = "blue"
-        }
-        char.update(ctx)
+        ctx = this.context
+        this.elemnts.forEach(el => {
+            el.update(ctx)
+        })
     }
 }
 
 function onKeyPr(e) {
-    // console.log(e.key)
     let fltng = myMovingCanvas.elemnts[0]
-    switch (e.key) {
-        case "s":
-            fltng.accelY = 3
-            break
-        case "w":
-            fltng.accelY = -3
-            break
-        case "d":
-            fltng.accelX = 3
-            break
-        case "a":
-            fltng.accelX = -3
-            break
-        default:
-            fltng.accelX = 0
-            fltng.accelY = 0
+    if (e.key == "s") {
+        fltng.accelY = 3
+    }
+    if (e.key == "w") {
+        fltng.accelY = -3
+    }
+    if (e.key == "d") {
+        fltng.accelX = 3
+    }
+    if (e.key == "a") {
+        fltng.accelX = -3
+    }
+    if (e.key == "g") {
+        fltng.accelX = 0
+        fltng.accelY = 0
     }
 }
 function onRientation(e) {
-    console.log("AAAAAAAAAAAAA")
-    var x = event.beta  // In degree in the range [-180,180]
-    var y = event.gamma // In degree in the range [-90,90]
+    console.log("AAAAAAAAAAAAA");
+    var x = event.beta;  // In degree in the range [-180,180]
+    var y = event.gamma; // In degree in the range [-90,90]
   
-    output.innerHTML  = "beta : " + x + "\n"
-    output.innerHTML += "gamma: " + y + "\n"
+    output.innerHTML  = "beta : " + x + "\n";
+    output.innerHTML += "gamma: " + y + "\n";
   
     // Because we don't want to have the device upside down
     // We constrain the x value to the range [-90,90]
-    if (x >  90) { x =  90}
-    if (x < -90) { x = -90}
+    if (x >  90) { x =  90};
+    if (x < -90) { x = -90};
   
     // To make computation easier we shift the range of 
     // x and y to [0,180]
-    x += 90
-    y += 90
+    x += 90;
+    y += 90;
   
     // 10 is half the size of the ball
     // It center the positioning point to the center of the ball
-    ball.style.top  = (maxY*y/180 - 10) + "px"
-    ball.style.left = (maxX*x/180 - 10) + "px"
+    ball.style.top  = (maxY*y/180 - 10) + "px";
+    ball.style.left = (maxX*x/180 - 10) + "px";
 }
 
 function main() {
     if (window.DeviceOrientationEvent && 'ontouchstart' in window) {
-        window.addEventListener('deviceorientation', onRientation) // lmao
+        window.addEventListener('deviceorientation', onRientation); // lmao
     } else {
         window.addEventListener("keypress", onKeyPr)
     }
@@ -243,6 +225,6 @@ let loaded = 0,
 function doneLoad() {
     loaded += 1
     if (loaded == toLoad) {
-        document.getElementById("load-scr").classList.add("hidden")
+        document.getElementById("loadScr").classList.add("hidden")
     }
 }
