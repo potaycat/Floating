@@ -177,7 +177,6 @@ class Feesh extends Character {
         this.isCollided = false
     }
     onAnimCycleDone() {
-        console.log(this.curAnim);
         if (this.isCollided) {
             switch (this.curAnim) {
                 case "onWater":
