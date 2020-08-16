@@ -1,0 +1,31 @@
+{
+    "name": "Drifting Vaporeon",
+    "short_name": "Vaporeon",
+    "start_url": "index.html",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#79CEE0",
+    "orientation": "portrait-primary",
+    "icons": [
+      {
+        "src": "/icons/icon-72.png",
+        "type": "image/png", "sizes": "72x72"
+      },
+      {
+        "src": "/icons/icon-96.png",
+        "type": "image/png", "sizes": "96x96"
+      },
+      {
+        "src": "/icons/icon-144.png",
+        "type": "image/png", "sizes": "144x144"
+      },
+      {
+        "src": "/icons/icon-192.png",
+        "type": "image/png", "sizes": "192x192"
+      },
+      {
+        "src": "/icons/icon-512.png",
+        "type": "image/png", "sizes": "512x512"
+      }
+    ]
+  }

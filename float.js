@@ -3,6 +3,14 @@
 * Author: https://twitter.com/Lreeeon
 */
 
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+        navigator.serviceWorker
+            .register("/serviceWorker.js")
+            .then(res => console.log("service worker registered"))
+            .catch(err => console.log("service worker not registered", err))
+    })
+}
 
 class Sprite {
     constructor(x, y, width, height) {
@@ -32,7 +40,7 @@ class Sprite {
         }
         return isCollided
     }
-    setAnim(imgArr, framePer=5) {
+    setAnim(imgArr, framePer = 5) {
         if (!Array.isArray(imgArr)) {
             console.error("setAnim() accepts array of Images only")
         }
@@ -146,9 +154,9 @@ class Rock extends Sprite {
 }
 
 class PatternFill extends Sprite {
-    constructor(width, height, spriteArr) {
+    constructor(width, height, spriteArr, framePer) {
         super(0, 0, width, height)
-        this.setAnim(spriteArr, 10)
+        this.setAnim(spriteArr, framePer || 10)
     }
     draw(ctx) {
         let pat = ctx.createPattern(this.getCurFrame(), 'repeat')
@@ -273,7 +281,7 @@ let myMovingCanvas = {
     },
     update: function () {
         let ctx = this.context,
-            els = this.elemnts
+            els = this.elemnts,
             isCollided = false
 
         this.clear()
@@ -313,8 +321,8 @@ function onKeyPr(e) {
 }
 function onRientation(e) {
     // console.log(e.gamma)
-    fsh.accelX = e.gamma
-    fsh.accelY = e.beta
+    fsh.accelX = e.gamma * .7
+    fsh.accelY = e.beta * .7
 }
 
 function main() {
