@@ -2,28 +2,31 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Comic Sans MS", cursive, sans-serif;
 }
 
 canvas {
-    background-color: rgb(255, 133, 124);
+    background-color: #fff;
 }
 
 body {
     overflow: hidden;
 }
 
-.assets img {
+#assets img {
     display: none;
 }
 
-.load-scr {
+#load-scr {
     position: absolute;
-    height: 999px;
-    width: 999px;
-    background: black;
+    height: 100%;
+    width: 100%;
+    background: rgb(133, 182, 255);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px;
     color: #fff;
-    align-content: center;
-    vertical-align: middle;
 }
 
 .hidden {

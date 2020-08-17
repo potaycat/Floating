@@ -3,14 +3,7 @@
 * Author: https://twitter.com/Lreeeon
 */
 
-if ("serviceWorker" in navigator) {
-    window.addEventListener("load", function () {
-        navigator.serviceWorker
-            .register("/serviceWorker.js")
-            .then(res => console.log("service worker registered"))
-            .catch(err => console.log("service worker not registered", err))
-    })
-}
+let matrix = document.getElementById('svg1').createSVGMatrix()
 
 class Sprite {
     constructor(x, y, width, height) {
@@ -74,6 +67,8 @@ class Sprite {
         }
     }
     draw(ctx) {
+        // ctx.fillStyle = this.status || "red"
+        // ctx.fillRect(this.x, this.y, this.width, this.height)
         ctx.drawImage(this.getCurFrame(), this.x, this.y, this.width, this.height)
     }
 }
@@ -91,59 +86,55 @@ class Character extends Sprite {
     }
     update() {
         super.update()
-        this.newPos()
-        this.x += this.velX
-        this.y += this.velY
-        this.hitBorder()
-    }
-    draw(ctx) {
-        ctx.fillStyle = this.status
-        ctx.fillRect(this.x, this.y, this.width, this.height)
-        // super.draw(ctx)
-    }
-    newPos() {
         if (this.velX < this.accelX) {
             this.velX += this.dragFrce
-        }
-        else if (this.velX > this.accelX) {
+        } else if (this.velX > this.accelX) {
             this.velX -= this.dragFrce
         }
         if (this.velY < this.accelY) {
             this.velY += this.dragFrce
-        }
-        else if (this.velY > this.accelY) {
+        } else if (this.velY > this.accelY) {
             this.velY -= this.dragFrce
         }
+        this.x += this.velX
+        this.y += this.velY
+        this.hitBorder()
     }
     hitBorder() {
         let bottom = myMovingCanvas.canvas.height - this.height
         let right = myMovingCanvas.canvas.width - this.width
         if (this.y > bottom) {
             this.y = bottom
-            this.accelY = 0
-        }
-        else if (this.y < 0) {
+            this.velY = -this.velY
+            this.accelY = -this.accelY
+            window.navigator.vibrate(50)
+        } else if (this.y < 0) {
             this.y = 0
-            this.accelY = 0
+            this.velY = -this.velY
+            this.accelY = -this.accelY
+            window.navigator.vibrate(50)
         }
         if (this.x > right) {
             this.x = right
-            this.accelX = 0
-        }
-        else if (this.x < 0) {
+            this.velX = -this.velX
+            this.accelX = -this.accelX
+            window.navigator.vibrate(50)
+        } else if (this.x < 0) {
             this.x = 0
-            this.accelX = 0
+            this.velX = -this.velX
+            this.accelX = -this.accelX
+            window.navigator.vibrate(50)
         }
     }
 }
 
 class Rock extends Sprite {
-    constructor(x, y, text, rockPicArr) {
-        super(x, y, 250, 150)
+    constructor(x, y, w=250, h=210, text="", rockPicArr, framePer=21) {
+        super(x, y, w, h)
         this.text = text
         this.setAnim(rockPicArr ||
             [document.getElementById("rock"), document.getElementById("rock2")]
-        )
+        , framePer)
     }
     draw(ctx) {
         super.draw(ctx)
@@ -154,13 +145,14 @@ class Rock extends Sprite {
 }
 
 class PatternFill extends Sprite {
-    constructor(width, height, spriteArr, framePer) {
+    constructor(width, height, spriteArr, framePer=10, sclF=1) {
         super(0, 0, width, height)
-        this.setAnim(spriteArr, framePer || 10)
+        this.setAnim(spriteArr, framePer)
     }
     draw(ctx) {
         let pat = ctx.createPattern(this.getCurFrame(), 'repeat')
         ctx.fillStyle = pat
+        pat.setTransform(matrix.scale(0.9))
         ctx.fillRect(0, 0, this.width, this.height)
     }
     isCollidedW() {
@@ -170,7 +162,9 @@ class PatternFill extends Sprite {
 
 class Feesh extends Character {
     spriteArr = {
-        onWater: [],
+        onWater: [
+            document.getElementById("feesh1"),
+        ],
         sink: [],
         toLand: [],
         onLand: [],
@@ -178,11 +172,13 @@ class Feesh extends Character {
         float: [],
     }
     constructor() {
-        super(20, 120, 30, 30)
+        super(20, 120, 50, 50)
         this.hasTransition = true
         this.prevAnim = "onWater"
         this.curAnim = "onWater"
         this.isCollided = false
+        this.desire2StayOnLand = 0.03
+        this.setAnim(this.spriteArr["onWater"], 10)
     }
     onAnimCycleDone() {
         if (this.isCollided) {
@@ -243,14 +239,30 @@ class Feesh extends Character {
 
         if (this.curAnim != this.prevAnim) {
             this.prevAnim = this.curAnim
-            // this.setAnim(Feesh.spriteArr[this.curAnim], 10)
+            this.setAnim(this.spriteArr["onWater"], 10)
         }
+    }
+    update() {
+        super.update()
+        if (this.isCollided) {
+            fsh.accelX -= Math.sign(fsh.accelX) * this.desire2StayOnLand
+            fsh.accelY -= Math.sign(fsh.accelY) * this.desire2StayOnLand
+        }
+    }
+    draw(ctx) {
+        // TODO: rotate
+        // ctx.translate(-this.x, -this.y)
+        // ctx.rotate(0.1)
+        // super.draw(ctx)
+        let img = this.getCurFrame()
+        // ctx.setTransform(matrix.rotate(45))
+        ctx.drawImage(img, this.x-75, this.y-75, 200, 200)
     }
 }
 
 
-let fsh = new Feesh()
-let myMovingCanvas = {
+const fsh = new Feesh()
+const myMovingCanvas = {
     canvas: document.getElementById("my-canvas"),
     elemnts: [],
     start: function () {
@@ -264,25 +276,33 @@ let myMovingCanvas = {
 
         this.elemnts = this.elemnts.concat([
             new PatternFill(this.canvas.width, this.canvas.height, [
-                document.getElementById("gif_test"),
-                document.getElementById("gif_test2")
-            ]),
-            new Rock(100, 140, "Re calibrate"),
-            new Rock(200, 240, "Re position")
+                document.getElementById("water1"),
+                document.getElementById("water2"),
+                document.getElementById("water3"),
+                document.getElementById("water4"),
+                document.getElementById("water5"),
+                document.getElementById("water6")
+            ], 17),
+            new PatternFill(this.canvas.width, this.canvas.height, [
+                document.getElementById("water-refl1"),
+                document.getElementById("water-refl2")
+            ], 31),
+            new Rock(185, 150),
+            // new Rock(200, 240, "Rocc 2")
         ])
 
-        fsh.setAnim([
-            document.getElementById("gif_test"),
-            document.getElementById("gif_test2")
-        ], 1)
+        setInterval(() => {
+            fsh.accelX = Math.random() * 4 - 2
+            fsh.accelY = Math.random() * 4 - 2
+        }, 7000)
     },
     clear: function () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
     },
     update: function () {
-        let ctx = this.context,
-            els = this.elemnts,
-            isCollided = false
+        ctx = this.context
+        els = this.elemnts
+        isCollided = false
 
         this.clear()
         this.frameNo += 1
@@ -297,7 +317,12 @@ let myMovingCanvas = {
             }
             el.draw(ctx)
         })
-        fsh.isCollided = isCollided
+        if (isCollided && !fsh.isCollided) {
+            fsh.isCollided = true
+            window.navigator.vibrate(50)
+        } else {
+            fsh.isCollided = isCollided
+        }
         fsh.update()
         fsh.draw(ctx)
     }
@@ -307,13 +332,13 @@ let myMovingCanvas = {
 function onKeyPr(e) {
     // console.log(e.key)
     if (["ArrowDown", "s", "S"].includes(e.key)) {
-        fsh.accelY = 4
+        fsh.accelY = 2
     } else if (["ArrowUp", "w", "W"].includes(e.key)) {
-        fsh.accelY = -4
+        fsh.accelY = -2
     } else if (["ArrowRight", "d", "D"].includes(e.key)) {
-        fsh.accelX = 4
+        fsh.accelX = 2
     } else if (["ArrowLeft", "a", "A"].includes(e.key)) {
-        fsh.accelX = -4
+        fsh.accelX = -2
     } else {
         fsh.accelX = 0
         fsh.accelY = 0
@@ -321,14 +346,20 @@ function onKeyPr(e) {
 }
 function onRientation(e) {
     // console.log(e.gamma)
-    fsh.accelX = e.gamma * .7
-    fsh.accelY = e.beta * .7
+    fsh.accelX = e.gamma * .075
+    fsh.accelY = e.beta * .075
 }
 
 function main() {
     window.addEventListener('deviceorientation', onRientation) // lmao
     window.addEventListener("keydown", onKeyPr)
     myMovingCanvas.start()
+
+    window.addEventListener("load", e => {
+        var image = document.querySelector('img')
+        var isLoaded = image.complete && image.naturalHeight !== 0
+        alert(isLoaded);
+    })
 }
 
 
@@ -337,7 +368,7 @@ let loaded = 0,
 function doneLoad() {
     loaded += 1
     if (loaded == toLoad) {
-        fadeAway(document.getElementsByClassName("load-scr")[0])
+        fadeAway(document.getElementById("load-scr"))
     }
 }
 function appear(elem) {
@@ -348,4 +379,13 @@ function fadeAway(elem) {
     setTimeout(() => {
         elem.style.display = "none"
     }, 600)
+}
+
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+        navigator.serviceWorker
+            .register("/serviceWorker.js")
+            .then(res => console.log("service worker registered"))
+            .catch(err => console.log("service worker not registered", err))
+    })
 }

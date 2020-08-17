@@ -3,29 +3,39 @@
 <html>
 
 <head>
-    <link rel="manifest" href="manifest.json" />
+    <link rel="manifest" href="manifest.json"/>
     <!-- ios support -->
-    <link rel="apple-touch-icon" href="icons/icon-72.png" />
-    <link rel="apple-touch-icon" href="icons/icon-96.png" />
-    <link rel="apple-touch-icon" href="icons/icon-144.png" />
-    <link rel="apple-touch-icon" href="icons/icon-192.png" />
-    <link rel="apple-touch-icon" href="icons/icon-512.png" />
-    <meta name="apple-mobile-web-app-status-bar" content="#000000" />
-    <meta name="theme-color" content="#79CEE0" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" href="icons/icon-72.png"/>
+    <link rel="apple-touch-icon" href="icons/icon-96.png"/>
+    <link rel="apple-touch-icon" href="icons/icon-144.png"/>
+    <link rel="apple-touch-icon" href="icons/icon-192.png"/>
+    <link rel="apple-touch-icon" href="icons/icon-512.png"/>
+    <meta name="apple-mobile-web-app-status-bar" content="#79CEE0"/>
+    <meta name="theme-color" content="#79CEE0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     <link rel="stylesheet" type="text/css" href="css.css">
 </head>
 
 <body onload="main()">
-    <!-- <div class="load-scr">Loading...</div> -->
+    <!-- <div id="load-scr">Loading...</div> -->
     <canvas id="my-canvas"></canvas>
-    <div class="assets">
+    <svg id="svg1"></svg>
+
+    <div id="assets">
         <img src="assets/rock.png" id="rock">
         <img src="assets/rock2.png" id="rock2">
-        <img src="https://media.discordapp.net/attachments/724819477446787220/736305504434782218/ezgif.com-crop_1.gif"
-            id="gif_test" style="display:">
-        <img src="assets/20200816041942.png" id="gif_test2">
+
+        <img src="assets/water1.png" id="water1">
+        <img src="assets/water2.png" id="water2">
+        <img src="assets/water3.png" id="water3">
+        <img src="assets/water4.png" id="water4">
+        <img src="assets/water5.png" id="water5">
+        <img src="assets/water6.png" id="water6">
+        <img src="assets/water_refl_1.png" id="water-refl1">
+        <img src="assets/water_refl_2.png" id="water-refl2">
+
+        <img src="assets/feesh1.png" id="feesh1">
     </div>
 
     <script src="float.js"></script>
