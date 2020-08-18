@@ -3,7 +3,9 @@
 * Author: https://twitter.com/Lreeeon
 */
 
-let matrix = document.getElementById('svg1').createSVGMatrix()
+const debug = false
+const canvas = document.getElementById("my-canvas")
+const matrix = document.getElementById('svg1').createSVGMatrix()
 
 class Sprite {
     constructor(x, y, width, height) {
@@ -11,6 +13,7 @@ class Sprite {
         this.y = y
         this.width = width
         this.height = height
+        this.angle = 0 // rad
 
         this.frames = []
         this.curFrame = 0
@@ -66,10 +69,27 @@ class Sprite {
             this._frmPrCountr = 0
         }
     }
+    getSpriteCoord() {
+        return [this.x, this.y, this.width, this.height]
+    }
     draw(ctx) {
-        // ctx.fillStyle = this.status || "red"
-        // ctx.fillRect(this.x, this.y, this.width, this.height)
-        ctx.drawImage(this.getCurFrame(), this.x, this.y, this.width, this.height)
+        if (this.angle) {
+            ctx.translate(this.x + this.width / 2, this.y + this.height / 2)
+            ctx.rotate(this.angle)
+            ctx.drawImage(this.getCurFrame(), ...this.getSpriteCoord())
+            ctx.setTransform(1, 0, 0, 1, 0, 0)
+        } else {
+            // careful when angle is 0
+            ctx.drawImage(this.getCurFrame(), ...this.getSpriteCoord())
+        }
+        if (debug) {
+            ctx.globalAlpha = 0.2
+            ctx.fillStyle = this.status || "red"
+            ctx.fillRect(this.x, this.y, this.width, this.height)
+            ctx.fillStyle = "green"
+            ctx.fillRect(...this.getSpriteCoord())
+            ctx.globalAlpha = 1.0
+        }
     }
 }
 
@@ -107,50 +127,50 @@ class Character extends Sprite {
             this.y = bottom
             this.velY = -this.velY
             this.accelY = -this.accelY
-            window.navigator.vibrate(50)
+            window.navigator.vibrate(45)
         } else if (this.y < 0) {
             this.y = 0
             this.velY = -this.velY
             this.accelY = -this.accelY
-            window.navigator.vibrate(50)
+            window.navigator.vibrate(45)
         }
         if (this.x > right) {
             this.x = right
             this.velX = -this.velX
             this.accelX = -this.accelX
-            window.navigator.vibrate(50)
+            window.navigator.vibrate(45)
         } else if (this.x < 0) {
             this.x = 0
             this.velX = -this.velX
             this.accelX = -this.accelX
-            window.navigator.vibrate(50)
+            window.navigator.vibrate(45)
         }
     }
 }
 
 class Rock extends Sprite {
-    constructor(x, y, w=250, h=210, text="", rockPicArr, framePer=21) {
+    constructor(x, y, w = 250, h = 210, text = "",
+        rockPicArr = [document.getElementById("rock"), document.getElementById("rock2")],
+        framePer = 21) {
         super(x, y, w, h)
         this.text = text
-        this.setAnim(rockPicArr ||
-            [document.getElementById("rock"), document.getElementById("rock2")]
-        , framePer)
+        this.setAnim(rockPicArr, framePer)
     }
-    draw(ctx) {
-        super.draw(ctx)
-        ctx.font = "32px Arial"
-        ctx.fillStyle = "blue"
-        ctx.fillText(this.text, this.x + 60, this.y + 70)
-    }
+    // draw(ctx) {
+    //     super.draw(ctx)
+    //     ctx.font = "32px Arial"
+    //     ctx.fillStyle = "blue"
+    //     ctx.fillText(this.text, this.x + 60, this.y + 70)
+    // }
 }
 
 class PatternFill extends Sprite {
-    constructor(width, height, spriteArr, framePer=10, sclF=1) {
+    constructor(width, height, spriteArr, framePer = 10, sclF = 1) {
         super(0, 0, width, height)
         this.setAnim(spriteArr, framePer)
     }
     draw(ctx) {
-        let pat = ctx.createPattern(this.getCurFrame(), 'repeat')
+        const pat = ctx.createPattern(this.getCurFrame(), 'repeat')
         ctx.fillStyle = pat
         pat.setTransform(matrix.scale(0.9))
         ctx.fillRect(0, 0, this.width, this.height)
@@ -173,6 +193,10 @@ class Feesh extends Character {
     }
     constructor() {
         super(20, 120, 50, 50)
+        this.angle = 6.3
+        this.toAngle = 0
+        this.rotateSpd = 0.0023
+
         this.hasTransition = true
         this.prevAnim = "onWater"
         this.curAnim = "onWater"
@@ -248,22 +272,24 @@ class Feesh extends Character {
             fsh.accelX -= Math.sign(fsh.accelX) * this.desire2StayOnLand
             fsh.accelY -= Math.sign(fsh.accelY) * this.desire2StayOnLand
         }
+        if (this.angle < this.toAngle) {
+            this.angle += this.rotateSpd
+        } else {
+            this.angle -= this.rotateSpd
+        }
+        if (debug) {
+            this.angle += 0.1
+        }
     }
-    draw(ctx) {
-        // TODO: rotate
-        // ctx.translate(-this.x, -this.y)
-        // ctx.rotate(0.1)
-        // super.draw(ctx)
-        let img = this.getCurFrame()
-        // ctx.setTransform(matrix.rotate(45))
-        ctx.drawImage(img, this.x-75, this.y-75, 200, 200)
+    getSpriteCoord() {
+        return [-75, -75, 200, 200]
     }
 }
 
 
 const fsh = new Feesh()
 const myMovingCanvas = {
-    canvas: document.getElementById("my-canvas"),
+    canvas: canvas,
     elemnts: [],
     start: function () {
         this.canvas.width = window.screen.width
@@ -287,13 +313,14 @@ const myMovingCanvas = {
                 document.getElementById("water-refl1"),
                 document.getElementById("water-refl2")
             ], 31),
-            new Rock(185, 150),
-            // new Rock(200, 240, "Rocc 2")
+            new Rock(185, 170),
+            new Rock(880, 400, 300, 280),
         ])
 
         setInterval(() => {
             fsh.accelX = Math.random() * 4 - 2
             fsh.accelY = Math.random() * 4 - 2
+            fsh.toAngle = Math.random() * 2 * Math.PI
         }, 7000)
     },
     clear: function () {
