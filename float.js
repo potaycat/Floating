@@ -386,12 +386,6 @@ const myMovingCanvas = {
             fsh.accelY = Math.random() * 4 - 2
             fsh.toAngle = Math.random() * 2 * Math.PI
         }, 7000)
-
-        setInterval(() => {
-            if (!fsh.isCollided) {
-                ripple.playAt(fsh.x-75, fsh.y-75)
-            }
-        }, 800)
     },
     clear: function () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
@@ -403,8 +397,11 @@ const myMovingCanvas = {
 
         this.clear()
         this.frameNo += 1
-        if ((this.frameNo / 5) % 1 == 0) {
-            // every 5 frames
+        if ((this.frameNo / 35) % 1 == 0) {
+            // every n frames
+            if (!fsh.isCollided) {
+                ripple.playAt(fsh.x-75, fsh.y-75)
+            }
         }
         els.forEach(el => {
             el.update()

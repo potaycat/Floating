@@ -4,6 +4,7 @@ const assets = [
     "/index.html",
     "/css.css",
     "/float.js",
+    "/icons/icon-36.png",
     "/assets/rock.png",
     "/assets/rock2.png",
     "/assets/water1.png",
