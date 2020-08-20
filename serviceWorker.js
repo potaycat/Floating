@@ -20,6 +20,16 @@ const assets = [
     "/assets/feesh5.png",
     "/assets/feesh6.png",
     "/assets/feesh7.png",
+    "/assets/ripple1.png",
+    "/assets/ripple2.png",
+    "/assets/ripple3.png",
+    "/assets/ripple4.png",
+    "/assets/blank.png",
+    "/assets/padded1.png",
+    "/assets/padded2.png",
+    "/assets/padded3.png",
+    "/assets/padded4.png",
+    "/assets/padded5.png",
 ]
 
 self.addEventListener("install", installEvent => {
