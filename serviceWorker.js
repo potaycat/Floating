@@ -1,18 +1,25 @@
-const staticFeeshDrift = "feesh-drift-site-v1"
+const staticFeeshDrift = "feesh-drift-v1.1"
 const assets = [
     "/",
     "/index.html",
     "/css.css",
     "/float.js",
-    "/assets/coffee1.jpg",
-    "/assets/coffee2.jpg",
-    "/assets/coffee3.jpg",
-    "/assets/coffee4.jpg",
-    "/assets/coffee5.jpg",
-    "/assets/coffee6.jpg",
-    "/assets/coffee7.jpg",
-    "/assets/coffee8.jpg",
-    "/assets/coffee9.jpg",
+    "/assets/rock.png",
+    "/assets/rock2.png",
+    "/assets/water1.png",
+    "/assets/water2.png",
+    "/assets/water3.png",
+    "/assets/water4.png",
+    "/assets/water5.png",
+    "/assets/water_refl_1.png",
+    "/assets/water_refl_2.png",
+    "/assets/feesh1.png",
+    "/assets/feesh2.png",
+    "/assets/feesh3.png",
+    "/assets/feesh4.png",
+    "/assets/feesh5.png",
+    "/assets/feesh6.png",
+    "/assets/feesh7.png",
 ]
 
 self.addEventListener("install", installEvent => {

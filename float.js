@@ -3,7 +3,7 @@
 * Author: https://twitter.com/Lreeeon
 */
 
-const debug = false
+const debug = 0
 const canvas = document.getElementById("my-canvas")
 const matrix = document.getElementById('svg1').createSVGMatrix()
 
@@ -180,10 +180,18 @@ class PatternFill extends Sprite {
     }
 }
 
+const idle = document.getElementById("feesh7")
 class Feesh extends Character {
     spriteArr = {
         onWater: [
             document.getElementById("feesh1"),
+            document.getElementById("feesh2"),
+            document.getElementById("feesh3"),
+            document.getElementById("feesh4"),
+            document.getElementById("feesh5"),
+            document.getElementById("feesh6"),
+            idle,idle,idle,idle,idle,idle,idle,idle,
+            idle,idle,idle,idle,idle,idle,idle,idle,
         ],
         sink: [],
         toLand: [],
@@ -198,11 +206,19 @@ class Feesh extends Character {
         this.rotateSpd = 0.0023
 
         this.hasTransition = true
-        this.prevAnim = "onWater"
+        this.prevAnim = ""
         this.curAnim = "onWater"
         this.isCollided = false
-        this.desire2StayOnLand = 0.03
-        this.setAnim(this.spriteArr["onWater"], 10)
+        this.desire2StayOnLand = 0.027
+
+        this.extraSprt = new Sprite(0, 0, 200, 200)
+        this.extraSprt.setAnim([
+            document.getElementById("padded1"),
+            document.getElementById("padded2"),
+            document.getElementById("padded3"),
+            document.getElementById("padded4"),
+            document.getElementById("padded5"),
+        ], 6)
     }
     onAnimCycleDone() {
         if (this.isCollided) {
@@ -263,7 +279,7 @@ class Feesh extends Character {
 
         if (this.curAnim != this.prevAnim) {
             this.prevAnim = this.curAnim
-            this.setAnim(this.spriteArr["onWater"], 10)
+            this.setAnim(this.spriteArr["onWater"], 4)
         }
     }
     update() {
@@ -280,9 +296,48 @@ class Feesh extends Character {
         if (debug) {
             this.angle += 0.1
         }
+
+        this.extraSprt.x = this.x -75
+        this.extraSprt.y = this.y -75
+        this.extraSprt.update()
     }
     getSpriteCoord() {
-        return [-75, -75, 200, 200]
+        return [-90, -100, 205, 205]
+    }
+    draw(ctx) {
+        if (!this.isCollided) {
+            this.extraSprt.draw(ctx)
+        }
+        super.draw(ctx)
+    }
+}
+
+class SuddenSprite extends Sprite {
+    constructor(width, height) {
+        super(0, 0, width, height)
+        this.hasTransition = true
+        this.isPlaying = false
+    }
+    onAnimCycleDone() {
+        this.isPlaying = false
+    }
+    playAt(x, y) {
+        this.x = x
+        this.y = y
+        this.isPlaying = true
+    }
+    update() {
+        if (this.isPlaying) {
+            super.update()
+        }
+    }
+    draw(ctx) {
+        if (this.isPlaying) {
+            super.draw(ctx)
+        }
+    }
+    isCollidedW() {
+        return false
     }
 }
 
@@ -300,6 +355,14 @@ const myMovingCanvas = {
             this.update()
         }, 33) // 30 FPS
 
+        ripple = new SuddenSprite(200, 200)
+        ripple.setAnim([
+            document.getElementById("ripple1"),
+            document.getElementById("ripple2"),
+            document.getElementById("ripple3"),
+            document.getElementById("ripple4"),
+            document.getElementById("blank"),
+        ], 6)
         this.elemnts = this.elemnts.concat([
             new PatternFill(this.canvas.width, this.canvas.height, [
                 document.getElementById("water1"),
@@ -307,12 +370,13 @@ const myMovingCanvas = {
                 document.getElementById("water3"),
                 document.getElementById("water4"),
                 document.getElementById("water5"),
-                document.getElementById("water6")
+                document.getElementById("water5")
             ], 17),
             new PatternFill(this.canvas.width, this.canvas.height, [
                 document.getElementById("water-refl1"),
                 document.getElementById("water-refl2")
             ], 31),
+            ripple,
             new Rock(185, 170),
             new Rock(880, 400, 300, 280),
         ])
@@ -322,6 +386,12 @@ const myMovingCanvas = {
             fsh.accelY = Math.random() * 4 - 2
             fsh.toAngle = Math.random() * 2 * Math.PI
         }, 7000)
+
+        setInterval(() => {
+            if (!fsh.isCollided) {
+                ripple.playAt(fsh.x-75, fsh.y-75)
+            }
+        }, 800)
     },
     clear: function () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
