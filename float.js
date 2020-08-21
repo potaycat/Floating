@@ -190,8 +190,8 @@ class Feesh extends Character {
             document.getElementById("feesh4"),
             document.getElementById("feesh5"),
             document.getElementById("feesh6"),
-            idle,idle,idle,idle,idle,idle,idle,idle,
-            idle,idle,idle,idle,idle,idle,idle,idle,
+            idle, idle, idle, idle, idle, idle, idle, idle,
+            idle, idle, idle, idle, idle, idle, idle, idle,
         ],
         sink: [],
         toLand: [],
@@ -297,8 +297,8 @@ class Feesh extends Character {
             this.angle += 0.1
         }
 
-        this.extraSprt.x = this.x -75
-        this.extraSprt.y = this.y -75
+        this.extraSprt.x = this.x - 75
+        this.extraSprt.y = this.y - 75
         this.extraSprt.update()
     }
     getSpriteCoord() {
@@ -400,7 +400,7 @@ const myMovingCanvas = {
         if ((this.frameNo / 35) % 1 == 0) {
             // every n frames
             if (!fsh.isCollided) {
-                ripple.playAt(fsh.x-75, fsh.y-75)
+                ripple.playAt(fsh.x - 75, fsh.y - 75)
             }
         }
         els.forEach(el => {
@@ -447,24 +447,15 @@ function onRientation(e) {
 function main() {
     window.addEventListener('deviceorientation', onRientation) // lmao
     window.addEventListener("keydown", onKeyPr)
+    canvas.addEventListener('click', () => {
+        document.getElementById("ambient").play()
+    })
     myMovingCanvas.start()
 
-    window.addEventListener("load", e => {
-        var image = document.querySelector('img')
-        var isLoaded = image.complete && image.naturalHeight !== 0
-        alert(isLoaded);
-    })
+    let assetList = document.images,
+        totalAssets = assetList.length
 }
 
-
-let loaded = 0,
-    toLoad = 3 // total images
-function doneLoad() {
-    loaded += 1
-    if (loaded == toLoad) {
-        fadeAway(document.getElementById("load-scr"))
-    }
-}
 function appear(elem) {
     elem.style.display = null
 }

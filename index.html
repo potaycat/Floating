@@ -4,18 +4,13 @@
 
 <head>
     <title>Drifting Vaporeon</title>
-    <link rel="icon" href="icons/icon-36.png"/>
-    <link rel="manifest" href="manifest.json"/>
-    <!-- ios support -->
-    <link rel="apple-touch-icon" href="icons/icon-72.png"/>
-    <link rel="apple-touch-icon" href="icons/icon-96.png"/>
-    <link rel="apple-touch-icon" href="icons/icon-144.png"/>
-    <link rel="apple-touch-icon" href="icons/icon-192.png"/>
-    <link rel="apple-touch-icon" href="icons/icon-512.png"/>
-    <meta name="apple-mobile-web-app-status-bar" content="#79CEE0"/>
-    <meta name="theme-color" content="#79CEE0"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" type="text/css" href="css.css"/>
+    <link rel="icon" href="icons/icon-36.png" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <meta name="apple-mobile-web-app-status-bar" content="#79CEE0" />
+    <meta name="theme-color" content="#79CEE0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css.css" />
 </head>
 
 <body onload="main()">
@@ -24,6 +19,7 @@
     <svg id="svg1"></svg>
 
     <div id="assets">
+        <audio id="ambient" src="assets/ambient.ogg" autoplay loop></audio>
         <img src="assets/rock.png" id="rock">
         <img src="assets/rock2.png" id="rock2">
 
@@ -52,6 +48,7 @@
         <img src="assets/padded3.png" id="padded3">
         <img src="assets/padded4.png" id="padded4">
         <img src="assets/padded5.png" id="padded5">
+
     </div>
 
     <script src="float.js"></script>
